@@ -1,9 +1,7 @@
-package com.blogspot.kateel.scala
-
-- tut
+package com.blogspot.kateel.scalatut
 
 /**
- * @author ${user.name}
+ * @author mlee
  */
 object App {
 
