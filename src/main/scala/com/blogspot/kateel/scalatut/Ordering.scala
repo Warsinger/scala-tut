@@ -1,5 +1,7 @@
 package com.blogspot.kateel.scalatut
 
+import collection.immutable.ListMap
+
 
 /**
  * Given 2 arrays, order the elements of the second array based on their order in the first array.
@@ -24,27 +26,32 @@ object Ordering {
     println("input: " + input.deep)
     println("expected: " + expected.deep)
 
-    testResult("1", expected, input, ordering, order.orderArray1)
-    testResult("2", expected, input, ordering, order.orderArray2)
-    testResult("K", expected, input, ordering, order.orderArrayK)
+    // uses ListMap to preserve ordering of the insertion order
+    val funcs = ListMap("1" -> order.orderArray1 _, "2" -> order.orderArray2 _, "3" -> order.orderArray3 _, "K" -> order.orderArrayK _)
+    funcs.foreach(tuple => testResult(tuple._1, tuple._2))
+
+    def testResult(tag: String, orderingFunc: (Array[Char], Array[Char]) => Array[Char]) {
+      val output = orderingFunc.apply(input, ordering)
+      if (output.sameElements(expected))
+        println(formatString(tag, "correct", output))
+      else
+        throw new IllegalStateException(formatString(tag, "incorrect", output))
+    }
   }
 
-  def testResult(tag: String, expected: Array[Char], input: Array[Char], ordering: Array[Char], orderingFunc: (Array[Char], Array[Char]) => Array[Char]) {
-    val output = orderingFunc.apply(input, ordering)
-    if (output.sameElements(expected))
-      printResult(tag, "correct", output)
-    else
-      printResult(tag, "incorrect", output)
-  }
-
-
-  def printResult(tag: String, correct: String, output: Array[Char]) {
+  def formatString(tag: String, correct: String, output: Array[Char]): String = {
     val deep = output.deep
-    println(s"output $tag $correct: $deep")
+    s"output for orderArray$tag is $correct: $deep"
   }
 }
 
 class Ordering {
+  /**
+   * Simple double array traversal that builds a list of things that match
+   * @param input the input array to order
+   * @param ordering the array to use to define the order and allowable values
+   * @return an array where the elements are ordered by the ordering array and only those elements contained in the ordering array are present
+   */
   def orderArray1(input: Array[Char], ordering: Array[Char]): Array[Char] = {
     var result = Vector[Char]()
     ordering.foreach {
@@ -73,6 +80,13 @@ class Ordering {
     true
   }
 
+  /**
+   * Builds a map of the ordering array keyed on the character with the value being the index in the array. Sorts the array
+   * using a comparator then filters out the sorted array based on its existence in the map
+   * @param input the input array to order
+   * @param ordering the array to use to define the order and allowable values
+   * @return an array where the elements are ordered by the ordering array and only those elements contained in the ordering array are present
+   */
   def orderArray2(input: Array[Char], ordering: Array[Char]): Array[Char] = {
     val orderMap = scala.collection.mutable.Map[Char, Int]()
     (0 until ordering.length).foreach {
@@ -80,13 +94,34 @@ class Ordering {
         orderMap += ordering(i) -> i
       }
     }
-    val sorted = input.sortWith(orderingComparator(_, _, orderMap.toMap))
-
-    sorted.filter {
+    input.sortWith(orderingComparator(_, _, orderMap.toMap)).filter {
       orderMap.contains(_)
     }
   }
 
+  /**
+   * Builds a map of the ordering array keyed on the character with the value being the index in the array. Filters the array
+   * based on its existence in the map and then sorts the array using a comparator that orders things by the values in the map (reverse order of operations from orderArray2)
+   * @param input the input array to order
+   * @param ordering the array to use to define the order and allowable values
+   * @return an array where the elements are ordered by the ordering array and only those elements contained in the ordering array are present
+   */
+  def orderArray3(input: Array[Char], ordering: Array[Char]): Array[Char] = {
+    val orderMap = scala.collection.mutable.Map[Char, Int]()
+    (0 until ordering.length).foreach {
+      i => {
+        orderMap += ordering(i) -> i
+      }
+    }
+    input.filter(orderMap.contains(_)).sortWith(orderingComparator(_, _, orderMap.toMap))
+  }
+
+  /**
+   * Filters the array based on its presence in the ordering array, then sorts by the ordering array.
+   * @param input the input array to order
+   * @param ordering the array to use to define the order and allowable values
+   * @return an array where the elements are ordered by the ordering array and only those elements contained in the ordering array are present
+   */
   def orderArrayK(input: Array[Char], ordering: Array[Char]): Array[Char] =
     input.filter(c => ordering.indexOf(c) >= 0).sortBy(c => ordering.indexOf(c))
 }
