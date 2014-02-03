@@ -21,9 +21,12 @@ object Ordering {
     val expected = Array('a', 'a', 'j', 'j', 'j', 'x', 'x', 'y', 'y', 'y', 'q', 'q', 'q', 'e', 'e', 'f', 'f')
     val order = new Ordering
 
+    println("input: " + input.deep)
+    println("expected: " + expected.deep)
+
     testResult("1", expected, input, ordering, order.orderArray1)
     testResult("2", expected, input, ordering, order.orderArray2)
-    testResult("3", expected, input, ordering, order.orderArray3)
+    testResult("K", expected, input, ordering, order.orderArrayK)
   }
 
   def testResult(tag: String, expected: Array[Char], input: Array[Char], ordering: Array[Char], orderingFunc: (Array[Char], Array[Char]) => Array[Char]) {
@@ -84,6 +87,6 @@ class Ordering {
     }
   }
 
-  def orderArray3(input: Array[Char], ordering: Array[Char]): Array[Char] =
+  def orderArrayK(input: Array[Char], ordering: Array[Char]): Array[Char] =
     input.filter(c => ordering.indexOf(c) >= 0).sortBy(c => ordering.indexOf(c))
 }
