@@ -4,7 +4,7 @@ import collection.immutable.ListMap
 
 
 /**
- * A little playground for learning scala features.
+ * A playground for learning scala features.
  *
  * Given 2 arrays, order the elements of the second array based on their order in the first array.
  * Ordering:   {'a', 'j', 'x', 'y', 'q', 'e', 'f'};
