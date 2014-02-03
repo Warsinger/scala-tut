@@ -27,7 +27,7 @@ object Ordering {
     println("expected: " + expected.deep)
 
     // uses ListMap to preserve ordering of the insertion order
-    val funcs = ListMap("1" -> order.orderArray1 _, "2" -> order.orderArray2 _, "3" -> order.orderArray3 _, "K" -> order.orderArrayK _)
+    val funcs = ListMap("Double loop" -> order.orderArray1 _, "Map 1" -> order.orderArray2 _, "Map 1.1" -> order.orderArray3 _, "Kurt one liner" -> order.orderArrayK _)
     funcs.foreach(tuple => testResult(tuple._1, tuple._2))
 
     def testResult(tag: String, orderingFunc: (Array[Char], Array[Char]) => Array[Char]) {
@@ -39,9 +39,9 @@ object Ordering {
     }
   }
 
-  def formatString(tag: String, correct: String, output: Array[Char]): String = {
+  def formatString(tag: String, status: String, output: Array[Char]): String = {
     val deep = output.deep
-    s"output for orderArray$tag is $correct: $deep"
+    s"output for ordering function tagged '$tag' is $status: $deep"
   }
 }
 
