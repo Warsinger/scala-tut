@@ -17,21 +17,27 @@ object Ordering {
 
   def main(args: Array[String]) {
     val ordering = Array('a', 'j', 'x', 'y', 'q', 'e', 'f')
-    val input1 = Array('a', 'j', 'x', 'y', 'q', 'e', 'f', 'm', 'n', 'j', 'y', 'q', 'a', 'j', 'x', 'y', 'q', 'e', 'f')
-    val input2 = input1.clone()
+    val input = Array('a', 'j', 'x', 'y', 'q', 'e', 'f', 'm', 'n', 'j', 'y', 'q', 'a', 'j', 'x', 'y', 'q', 'e', 'f')
     val expected = Array('a', 'a', 'j', 'j', 'j', 'x', 'x', 'y', 'y', 'y', 'q', 'q', 'q', 'e', 'e', 'f', 'f')
     val order = new Ordering
-    val output1 = order.orderArray1(input1, ordering)
-    if (output1.sameElements(expected))
-      println("output 1 correct")
-    else
-      println("output 1 incorrect")
-    val output2 = order.orderArray2(input2, ordering)
-    if (output2.sameElements(expected))
-      println("output 2 correct")
-    else
-      println("output 2 incorrect")
 
+    testResult("1", expected, input, ordering, order.orderArray1)
+    testResult("2", expected, input, ordering, order.orderArray2)
+    testResult("3", expected, input, ordering, order.orderArray3)
+  }
+
+  def testResult(tag: String, expected: Array[Char], input: Array[Char], ordering: Array[Char], orderingFunc: (Array[Char], Array[Char]) => Array[Char]) {
+    val output = orderingFunc.apply(input, ordering)
+    if (output.sameElements(expected))
+      printResult(tag, "correct", output)
+    else
+      printResult(tag, "incorrect", output)
+  }
+
+
+  def printResult(tag: String, correct: String, output: Array[Char]) {
+    val deep = output.deep
+    println(s"output $tag $correct: $deep")
   }
 }
 
@@ -77,4 +83,7 @@ class Ordering {
       orderMap.contains(_)
     }
   }
+
+  def orderArray3(input: Array[Char], ordering: Array[Char]): Array[Char] =
+    input.filter(c => ordering.indexOf(c) >= 0).sortBy(c => ordering.indexOf(c))
 }
