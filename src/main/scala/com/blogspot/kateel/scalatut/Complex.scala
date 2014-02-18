@@ -1,6 +1,8 @@
 package com.blogspot.kateel.scalatut
 
 /**
+ * Simple complex number class.
+ *
  * Created with IntelliJ IDEA.
  * User: mlee
  * Date: 1/29/14
